@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .options {
+      margin-top: 15px;
+    }
+
+    .options label {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 15px;
+      padding: 10px;
+      background: #e0f7fa;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Password Generator</h2>
+    <label for="length">Password Length:</label>
+    <input type="number" id="length" min="1" max="100" value="12" />
+
+    <div class="options">
+      <label><input type="checkbox" id="upper" checked> Include Uppercase</label>
+      <label><input type="checkbox" id="lower" checked> Include Lowercase</label>
+      <label><input type="checkbox" id="digits" checked> Include Digits</label>
+      <label><input type="checkbox" id="special" checked> Include Special Characters</label>
+    </div>
+
+    <button onclick="generatePassword()">Generate Password</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function generatePassword() {
+      const length = document.getElementById('length').value;
+      const use_upper = document.getElementById('upper').checked;
+      const use_lower = document.getElementById('lower').checked;
+      const use_digits = document.getElementById('digits').checked;
+      const use_special = document.getElementById('special').checked;
+
+      const response = await fetch('/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          length: parseInt(length),
+          use_upper,
+          use_lower,
+          use_digits,
+          use_special
+        })
+      });
+
+      const data = await response.json();
+      document.getElementById('result').innerText = data.password;
+    }
+  </script>
+</body>
+</html>
